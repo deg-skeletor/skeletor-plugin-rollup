@@ -24,17 +24,10 @@ describe('rollup plugin', () => {
     });
 
     it('should error if no bundles defined', () => {
-        const logErrorSpy = jest.spyOn(logger, 'error');
         const config = {};
         const expectedErrorMessage = 'Error: No bundle configurations found.';
-        const expectedResponse = {
-            status: 'error',
-            message: expectedErrorMessage
-        };
         return skeletorRollup().run(config, options).catch(resp => {
-            expect(logErrorSpy).toHaveBeenCalledTimes(1);
-            expect(logErrorSpy).toHaveBeenCalledWith(expectedErrorMessage);
-            expect(resp).toEqual(expectedResponse);
+            expect(resp).toEqual(expectedErrorMessage);
         });
     });
 
@@ -115,16 +108,9 @@ describe('rollup plugin', () => {
                 dest: 'error'
             }]
         };
-        const errSpy = jest.spyOn(logger, 'error');
         const errMessage = 'Error: Could not resolve entry (error)';
-        const expectedResponse = {
-            status: 'error',
-            message: errMessage
-        };
         return skeletorRollup().run(config, options).catch(err => {
-            expect(errSpy).toHaveBeenCalledTimes(1);
-            expect(errSpy).toHaveBeenCalledWith(errMessage)
-            expect(err).toEqual(expectedResponse);
+            expect(err).toEqual(errMessage);
         });
     });
 

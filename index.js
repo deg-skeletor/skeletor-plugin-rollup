@@ -4,12 +4,8 @@ const babel = require('rollup-plugin-babel');
 const commonjs = require('rollup-plugin-commonjs');
 const resolve = require('rollup-plugin-node-resolve');
 
-function handleError(message, logger) {
-    logger.error(`${message}`);
-    return Promise.resolve({
-        status: 'error',
-        message: message
-    });
+function handleError(message) {
+    return Promise.reject(message);
 }
 
 function getConfig(defaultConfig, userConfig = {}) {
@@ -59,10 +55,10 @@ function run(config, {logger}) {
                     status: 'complete'
                 };
             })
-            .catch(e => handleError(e, logger));
+            .catch(handleError);
     }
 
-    return handleError('Error: No bundle configurations found.', logger);
+    return handleError('Error: No bundle configurations found.');
 }
 
 module.exports = skeletorLocalServer = () => (
