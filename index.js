@@ -1,35 +1,21 @@
 const rollup = require('rollup');
 const path = require('path');
-const babel = require('rollup-plugin-babel');
-const commonjs = require('rollup-plugin-commonjs');
-const resolve = require('rollup-plugin-node-resolve');
 
 function handleError(message) {
     return Promise.reject(message);
 }
 
-function getConfig(defaultConfig, userConfig = {}) {
-    return {
-        ...defaultConfig,
-        ...userConfig
-    };
+function formatPlugins(listOfPlugins) {
+    return listOfPlugins.map(plugin => {
+        return plugin.module(plugin.pluginConfig || {});
+    });
 }
 
-async function buildBundle(bundleConfig, pluginConfig = {}) {
+async function buildBundle(bundleConfig, pluginsFromConfig = []) {
     // only transpile not in development?
     const inputOpts = {
         input: path.resolve(bundleConfig.entry),
-        plugins: [
-            babel(
-                getConfig(require('./lib/babel.config'), pluginConfig.babel)
-            ),
-            resolve(
-                getConfig(require('./lib/nodeResolve.config'), pluginConfig.nodeResolve)
-            ),
-            commonjs(
-                getConfig(require('./lib/commonjs.config'), pluginConfig.commonJs)
-            )
-        ]
+        plugins: formatPlugins(pluginsFromConfig)
     };
 
     const outputOpts = {

@@ -29,6 +29,34 @@ The `run()` method executes a plugin's primary task,. It is the primary way (and
 
 ## Config Options
 
+Example:
+```
+{
+    bundles: [{
+        entry: "source/js/main.js",
+        dest: "dist/js/main-bundle.js",
+        format: "es"
+    }],
+    rollupPlugins: [
+        {
+            module: require('rollup-plugin-babel'),
+            config: {
+                exclude: 'node_modules/**'   
+            }
+        },
+        {
+            module: require('rollup-plugin-node-resolve'),
+            config: {
+                browser: true
+            }
+        },
+        {
+            module: require('rollup-plugin-commonjs')
+        }
+    ]
+}
+```
+
 **bundles**
 
 Type: `Object[]`
@@ -37,9 +65,10 @@ A list of [bundle config objects](#bundle-config-object).
 
 **rollupPlugins (optional)**
 
-Type: `Object`
+Type: `Object[]`
 
-An object map of various [rollup plugin configs](#rollup-plugin-config-object)
+A list of [rollup plugin configs](#rollup-plugin-config-object).
+*Note*: Order of plugins does matter! Rollup plugins are executed from last to first.
 
 ### Bundle Config Object
 
@@ -94,44 +123,28 @@ system – Native format of the SystemJS loader
 Example:
 ```
 {
-    rollupPlugins: {
-        babel: {},
-        nodeResolve: {},
-        commonJs: {}
-    }
+    rollupPlugins: [
+        {
+            "module": require('rollup-plugin'),
+            "pluginConfig": {}
+        }
+    ]
 }
 ```
 
-**babel**
+**module**
 
-Default: 
-```
-{
-    exclude: 'node_modules/**'
-}
-```
-A config object for rollup-plugin-babel.
+Type: `NPM module`
 
-**nodeResolve**
+An rollup plugin npm module. Check out the list of [rollup plugins](https://github.com/rollup/rollup/wiki/Plugins) for the possibilities.
+
+**pluginConfig (optional)**
 
 Type: `Object`
-
-Default: 
-```
-{
-    browser: true
-}
-```
-
-A config object for rollup-plugin-node-resolve. See [documentation](https://github.com/rollup/rollup-plugin-node-resolve#usage) for options.
-
-**commonJs**
-
-Type: `Object`
-
 Default: `{}`
 
-A config object for rollup-plugin-commonjs. See [documentation](https://github.com/rollup/rollup-plugin-commonjs#usage) for options.
+A config object for the corresponding plugin. Check the module's documentation for configuration options.
+
 
 ## Return Value
 A Promise that resolves to a [Status object](#the-status-object).
@@ -158,12 +171,3 @@ Contains any additional information regarding the status of the plugin. If the p
 ## Required Add-Ins
 [rollup](https://github.com/rollup/rollup):
 A module bundler for JavaScript.
-
-[rollup-plugin-babel](https://github.com/rollup/rollup-plugin-babel):
-A rollup plugin to integrate with babel (transpiler).
-
-[rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs)
-A rollup plugin to convert CommonJS modules to ES6.
-
-[rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve)
-A rollup plugin to resolve third-party modules in `node_modules`
