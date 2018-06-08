@@ -29,11 +29,46 @@ The `run()` method executes a plugin's primary task,. It is the primary way (and
 
 ## Config Options
 
+Example:
+```
+{
+    bundles: [{
+        entry: "source/js/main.js",
+        dest: "dist/js/main-bundle.js",
+        format: "es"
+    }],
+    rollupPlugins: [
+        {
+            module: require('rollup-plugin-babel'),
+            config: {
+                exclude: 'node_modules/**'   
+            }
+        },
+        {
+            module: require('rollup-plugin-node-resolve'),
+            config: {
+                browser: true
+            }
+        },
+        {
+            module: require('rollup-plugin-commonjs')
+        }
+    ]
+}
+```
+
 **bundles**
 
 Type: `Object[]`
 
 A list of [bundle config objects](#bundle-config-object).
+
+**rollupPlugins (optional)**
+
+Type: `Object[]`
+
+A list of [rollup plugin configs](#rollup-plugin-config-object).
+*Note*: Order of plugins does matter! Rollup plugins are executed from last to first.
 
 ### Bundle Config Object
 
@@ -67,7 +102,7 @@ Type: `String`
 
 Path to destination for bundle. This path is from the root of the project.
 
-**format**
+**format (optional)**
 
 Type: `String`
 Default: `es`
@@ -82,6 +117,34 @@ umd – Universal Module Definition, works as amd, cjs and iife all in one
 system – Native format of the SystemJS loader
 ```
 ^^ From [rollup documentation](https://rollupjs.org/guide/en#big-list-of-options)
+
+### Rollup Plugin Config Object
+
+Example:
+```
+{
+    rollupPlugins: [
+        {
+            "module": require('rollup-plugin'),
+            "pluginConfig": {}
+        }
+    ]
+}
+```
+
+**module**
+
+Type: `NPM module`
+
+An rollup plugin npm module. Check out the list of [rollup plugins](https://github.com/rollup/rollup/wiki/Plugins) for the possibilities.
+
+**pluginConfig (optional)**
+
+Type: `Object`
+Default: `{}`
+
+A config object for the corresponding plugin. Check the module's documentation for configuration options.
+
 
 ## Return Value
 A Promise that resolves to a [Status object](#the-status-object).

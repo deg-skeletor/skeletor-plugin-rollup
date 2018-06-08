@@ -21,17 +21,10 @@ describe('rollup plugin', () => {
     });
 
     it('should error if no bundles defined', () => {
-        const logErrorSpy = jest.spyOn(logger, 'error');
         const config = {};
         const expectedErrorMessage = 'Error: No bundle configurations found.';
-        const expectedResponse = {
-            status: 'error',
-            message: expectedErrorMessage
-        };
         return skeletorRollup().run(config, options).catch(resp => {
-            expect(logErrorSpy).toHaveBeenCalledTimes(1);
-            expect(logErrorSpy).toHaveBeenCalledWith(expectedErrorMessage);
-            expect(resp).toEqual(expectedResponse);
+            expect(resp).toEqual(expectedErrorMessage);
         });
     });
 
@@ -43,13 +36,84 @@ describe('rollup plugin', () => {
             }]
         };
         const expectedResponse = {
-            input: 'source/test.txt'
+            input: 'source/test.txt',
+            plugins: []
         };
         return skeletorRollup().run(config, options).then(() => {
             const inputOpts = rollup.__getFakeBundle().input;
             expect(inputOpts).toEqual(expectedResponse);
         });
     });
+
+    describe('rollup plugins', () => {
+        it('should create array of plugins', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: [
+                    {
+                        module: require('./__mocks__/rollup-plugin')
+                    },
+                    {
+                        module: require('./__mocks__/rollup-plugin')
+                    }
+                ]
+            };
+            const expectedResponse = {
+                input: 'source/test.txt',
+                plugins: ['rollup-plugin', 'rollup-plugin']
+            };
+            return skeletorRollup().run(config, options).then(() => {
+                const inputOpts = rollup.__getFakeBundle().input;
+                expect(inputOpts).toEqual(expectedResponse);
+            });
+        });
+
+        it('should default plugin config to empty object', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: [
+                    {
+                        module: require('./__mocks__/rollup-plugin')
+                    }
+                ]
+            };
+            const mockPlugin = require('./__mocks__/rollup-plugin');
+
+            return skeletorRollup().run(config, options).then(() => {
+                expect(mockPlugin.__getConfig()).toEqual({});
+            });
+        });
+
+        it('should call plugin with passed in config', () => {
+            const expectedResponse = {
+                prop: 'test'
+            };
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: [
+                    {
+                        module: require('./__mocks__/rollup-plugin'),
+                        pluginConfig: expectedResponse
+                    }
+                ]
+            };
+            const mockPlugin = require('./__mocks__/rollup-plugin');
+
+            return skeletorRollup().run(config, options).then(() => {
+                expect(mockPlugin.__getConfig()).toEqual(expectedResponse);
+            });
+        });
+    });
+
 
     it('should create output options', () => {
         const config = {
@@ -111,16 +175,10 @@ describe('rollup plugin', () => {
                 dest: 'error'
             }]
         };
-        const errSpy = jest.spyOn(logger, 'error');
         const errMessage = 'Error: Could not resolve entry (error)';
-        const expectedResponse = {
-            status: 'error',
-            message: errMessage
-        };
         return skeletorRollup().run(config, options).catch(err => {
-            expect(errSpy).toHaveBeenCalledTimes(1);
-            expect(errSpy).toHaveBeenCalledWith(errMessage)
-            expect(err).toEqual(expectedResponse);
+            expect(err).toEqual(errMessage);
         });
     });
+
 });

@@ -1,21 +1,26 @@
 const rollup = require('rollup');
 const path = require('path');
 
-function handleError(message, logger) {
-    logger.error(`${message}`);
-    return Promise.resolve({
-        status: 'error',
-        message: message
+function handleError(message) {
+    return Promise.reject(message);
+}
+
+function formatPlugins(listOfPlugins) {
+    return listOfPlugins.map(plugin => {
+        return plugin.module(plugin.pluginConfig || {});
     });
 }
 
-async function buildBundle(config) {
+async function buildBundle(bundleConfig, pluginsFromConfig = []) {
+    // only transpile not in development?
     const inputOpts = {
-        input: path.resolve(config.entry)
+        input: path.resolve(bundleConfig.entry),
+        plugins: formatPlugins(pluginsFromConfig)
     };
+
     const outputOpts = {
-        file: path.resolve(config.dest),
-        format: config.format || 'es'
+        file: path.resolve(bundleConfig.dest),
+        format: bundleConfig.format || 'es'
     };
 
     try {
@@ -29,17 +34,17 @@ async function buildBundle(config) {
 
 function run(config, {logger}) {
     if (config.bundles) {
-        return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig)))
+        return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig, config.rollupPlugins)))
             .then(responses => {
                 logger.info(`${responses.length} bundle${responses.length === 1 ? '' : 's'} complete.`);
                 return {
                     status: 'complete'
                 };
             })
-            .catch(e => handleError(e, logger));
+            .catch(handleError);
     }
 
-    return handleError('Error: No bundle configurations found.', logger);
+    return handleError('Error: No bundle configurations found.');
 }
 
 module.exports = skeletorLocalServer = () => (
