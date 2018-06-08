@@ -1,6 +1,8 @@
 const rollup = require('rollup');
 const path = require('path');
 const babel = require('rollup-plugin-babel');
+const commonjs = require('rollup-plugin-commonjs');
+const resolve = require('rollup-plugin-node-resolve');
 
 function handleError(message, logger) {
     logger.error(`${message}`);
@@ -10,14 +12,27 @@ function handleError(message, logger) {
     });
 }
 
+function getConfig(defaultConfig, userConfig = {}) {
+    return {
+        ...defaultConfig,
+        ...userConfig
+    };
+}
+
 async function buildBundle(config) {
     // only transpile not in development?
     const inputOpts = {
         input: path.resolve(config.entry),
         plugins: [
-            babel({
-                exclude: 'node_modules/**'
-            })
+            babel(
+                getConfig(require('./lib/babel.config'), config.babel)
+            ),
+            resolve(
+                getConfig(require('./lib/nodeResolve.config'), config.nodeResovle)
+            ),
+            commonjs(
+                getConfig(require('./lib/commonjs.config'), config.commonJs)
+            )
         ]
     };
 

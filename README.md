@@ -35,6 +35,39 @@ Type: `Object[]`
 
 A list of [bundle config objects](#bundle-config-object).
 
+**babel**
+
+Type: `Object`
+
+Default: 
+```
+{
+    exclude: 'node_modules/**'
+}
+```
+A config object for rollup-plugin-babel.
+
+**nodeResolve**
+
+Type: `Object`
+
+Default: 
+```
+{
+    browser: true
+}
+```
+
+A config object for rollup-plugin-node-resolve. See [documentation](https://github.com/rollup/rollup-plugin-node-resolve#usage) for options.
+
+**commonJs**
+
+Type: `Object`
+
+Default: `{}`
+
+A config object for rollup-plugin-commonjs. See [documentation](https://github.com/rollup/rollup-plugin-commonjs#usage) for options.
+
 ### Bundle Config Object
 
 Example:
@@ -108,3 +141,9 @@ Contains any additional information regarding the status of the plugin. If the p
 ## Required Add-Ins
 [rollup](https://github.com/rollup/rollup):
 A module bundler for JavaScript.
+
+[rollup-plugin-babel](https://github.com/rollup/rollup-plugin-babel):
+A rollup plugin to integrate with babel (transpiler).
+
+[rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs)
+A rollup plugin to convert CommonJS modules to ES6.
