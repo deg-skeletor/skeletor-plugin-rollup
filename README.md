@@ -164,3 +164,6 @@ A rollup plugin to integrate with babel (transpiler).
 
 [rollup-plugin-commonjs](https://github.com/rollup/rollup-plugin-commonjs)
 A rollup plugin to convert CommonJS modules to ES6.
+
+[rollup-plugin-node-resolve](https://github.com/rollup/rollup-plugin-node-resolve)
+A rollup plugin to resolve third-party modules in `node_modules`
