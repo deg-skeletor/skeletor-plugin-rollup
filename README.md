@@ -35,38 +35,11 @@ Type: `Object[]`
 
 A list of [bundle config objects](#bundle-config-object).
 
-**babel**
+**rollupPlugins (optional)**
 
 Type: `Object`
 
-Default: 
-```
-{
-    exclude: 'node_modules/**'
-}
-```
-A config object for rollup-plugin-babel.
-
-**nodeResolve**
-
-Type: `Object`
-
-Default: 
-```
-{
-    browser: true
-}
-```
-
-A config object for rollup-plugin-node-resolve. See [documentation](https://github.com/rollup/rollup-plugin-node-resolve#usage) for options.
-
-**commonJs**
-
-Type: `Object`
-
-Default: `{}`
-
-A config object for rollup-plugin-commonjs. See [documentation](https://github.com/rollup/rollup-plugin-commonjs#usage) for options.
+An object map of various [rollup plugin configs](#rollup-plugin-config-object)
 
 ### Bundle Config Object
 
@@ -100,7 +73,7 @@ Type: `String`
 
 Path to destination for bundle. This path is from the root of the project.
 
-**format**
+**format (optional)**
 
 Type: `String`
 Default: `es`
@@ -115,6 +88,50 @@ umd – Universal Module Definition, works as amd, cjs and iife all in one
 system – Native format of the SystemJS loader
 ```
 ^^ From [rollup documentation](https://rollupjs.org/guide/en#big-list-of-options)
+
+### Rollup Plugin Config Object
+
+Example:
+```
+{
+    rollupPlugins: {
+        babel: {},
+        nodeResolve: {},
+        commonJs: {}
+    }
+}
+```
+
+**babel**
+
+Default: 
+```
+{
+    exclude: 'node_modules/**'
+}
+```
+A config object for rollup-plugin-babel.
+
+**nodeResolve**
+
+Type: `Object`
+
+Default: 
+```
+{
+    browser: true
+}
+```
+
+A config object for rollup-plugin-node-resolve. See [documentation](https://github.com/rollup/rollup-plugin-node-resolve#usage) for options.
+
+**commonJs**
+
+Type: `Object`
+
+Default: `{}`
+
+A config object for rollup-plugin-commonjs. See [documentation](https://github.com/rollup/rollup-plugin-commonjs#usage) for options.
 
 ## Return Value
 A Promise that resolves to a [Status object](#the-status-object).

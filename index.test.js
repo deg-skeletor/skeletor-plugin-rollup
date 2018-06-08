@@ -3,6 +3,9 @@ const skeletorRollup = require('./index');
 let rollup;
 jest.mock('rollup');
 jest.mock('path');
+jest.mock('rollup-plugin-babel');
+jest.mock('rollup-plugin-commonjs');
+jest.mock('rollup-plugin-node-resolve');
 
 const logger = {
     info: () => {},
@@ -43,7 +46,8 @@ describe('rollup plugin', () => {
             }]
         };
         const expectedResponse = {
-            input: 'source/test.txt'
+            input: 'source/test.txt',
+            plugins: ['rollup-plugin-babel', 'rollup-plugin-node-resolve', 'rollup-plugin-commonjs']
         };
         return skeletorRollup().run(config, options).then(() => {
             const inputOpts = rollup.__getFakeBundle().input;
@@ -121,6 +125,73 @@ describe('rollup plugin', () => {
             expect(errSpy).toHaveBeenCalledTimes(1);
             expect(errSpy).toHaveBeenCalledWith(errMessage)
             expect(err).toEqual(expectedResponse);
+        });
+    });
+
+    describe('should pass correct config to rollup plugins', () => {
+
+        it('babel plugin', () => {
+            const babelPlugin = require('./__mocks__/rollup-plugin-babel');
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: {
+                    babel: {
+                        exclude: 'test'
+                    }
+                }
+            };
+            const expectedResponse = {
+                exclude: 'test'
+            };
+            return skeletorRollup().run(config, options).then(() => {
+                expect(babelPlugin.__getConfig()).toEqual(expectedResponse);
+            });
+        });
+
+        it('node resolve plugin', () => {
+            const nodeResolvePlugin = require('./__mocks__/rollup-plugin-node-resolve');
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: {
+                    nodeResolve: {
+                        modulesOnly: true
+                    }
+                }
+            };
+            const expectedResponse = {
+                browser: true,
+                modulesOnly: true
+            };
+            return skeletorRollup().run(config, options).then(() => {
+                expect(nodeResolvePlugin.__getConfig()).toEqual(expectedResponse);
+            });
+        });
+
+        it('node resolve plugin', () => {
+            const commonJsPlugin = require('./__mocks__/rollup-plugin-commonjs');
+            const config = {
+                bundles: [{
+                    entry: 'source/test.txt',
+                    dest: 'public/test.txt'
+                }],
+                rollupPlugins: {
+                    commonJs: {
+                        extensions: ['.js', '.coffee']
+                    }
+                }
+            };
+            const expectedResponse = {
+                extensions: ['.js', '.coffee']
+            };
+            return skeletorRollup().run(config, options).then(() => {
+                expect(commonJsPlugin.__getConfig()).toEqual(expectedResponse);
+            });
         });
     });
 });

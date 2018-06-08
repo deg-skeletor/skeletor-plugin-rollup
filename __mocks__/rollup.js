@@ -1,9 +1,7 @@
 let __fakeBundle = {};
 
 const rollup = {
-
-        rollup: rollupFn
-
+    rollup: rollupFn
 };
 
 function rollupFn(inputOpts) {

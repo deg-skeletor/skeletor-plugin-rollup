@@ -19,26 +19,26 @@ function getConfig(defaultConfig, userConfig = {}) {
     };
 }
 
-async function buildBundle(config) {
+async function buildBundle(bundleConfig, pluginConfig = {}) {
     // only transpile not in development?
     const inputOpts = {
-        input: path.resolve(config.entry),
+        input: path.resolve(bundleConfig.entry),
         plugins: [
             babel(
-                getConfig(require('./lib/babel.config'), config.babel)
+                getConfig(require('./lib/babel.config'), pluginConfig.babel)
             ),
             resolve(
-                getConfig(require('./lib/nodeResolve.config'), config.nodeResovle)
+                getConfig(require('./lib/nodeResolve.config'), pluginConfig.nodeResolve)
             ),
             commonjs(
-                getConfig(require('./lib/commonjs.config'), config.commonJs)
+                getConfig(require('./lib/commonjs.config'), pluginConfig.commonJs)
             )
         ]
     };
 
     const outputOpts = {
-        file: path.resolve(config.dest),
-        format: config.format || 'es'
+        file: path.resolve(bundleConfig.dest),
+        format: bundleConfig.format || 'es'
     };
 
     try {
@@ -52,7 +52,7 @@ async function buildBundle(config) {
 
 function run(config, {logger}) {
     if (config.bundles) {
-        return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig)))
+        return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig, config.rollupPlugins)))
             .then(responses => {
                 logger.info(`${responses.length} bundle${responses.length === 1 ? '' : 's'} complete.`);
                 return {
