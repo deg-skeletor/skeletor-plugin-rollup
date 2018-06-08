@@ -1,5 +1,6 @@
 const rollup = require('rollup');
 const path = require('path');
+const babel = require('rollup-plugin-babel');
 
 function handleError(message, logger) {
     logger.error(`${message}`);
@@ -10,9 +11,16 @@ function handleError(message, logger) {
 }
 
 async function buildBundle(config) {
+    // only transpile not in development?
     const inputOpts = {
-        input: path.resolve(config.entry)
+        input: path.resolve(config.entry),
+        plugins: [
+            babel({
+                exclude: 'node_modules/**'
+            })
+        ]
     };
+
     const outputOpts = {
         file: path.resolve(config.dest),
         format: config.format || 'es'
