@@ -1,4 +1,6 @@
 # Skeletor Rollup Plugin
+[![Build Status](https://travis-ci.org/deg-skeletor/skeletor-plugin-rollup.svg?branch=master)](https://travis-ci.org/deg-skeletor/skeletor-plugin-rollup)
+
 The purpose of this plugin is to bundle modules together using rollup.
 
 This is a functioning plugin that can be installed as-is to a Skeletor-equipped project. 
