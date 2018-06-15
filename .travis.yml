@@ -1,6 +1,15 @@
 language: node_js
 node_js:
-  - "node"
+- node
 cache:
   directories:
-    - "node_modules"
+  - node_modules
+deploy:
+  provider: npm
+  email: scheul93@gmail.com
+  api_key:
+    secure: X+yki3BHCsQHtYulNq/3Cm6hIsoMZDGI/MBDCIooNB/s4dJgXjyoxl5NSSlw5hNDcgExSU+LKDxng0aAy6U/DSSuhLJy3jktlfhE0Hd4LN5RE2XQBZmbSl2gFr9rSfjrZXvRnOOxhXLcdzVsT1s80JT6Cib5lPqFR0MRzn0R8gP0msy2fCvB6Yve7mro/is7TwttoE3e4kfwmuKsUe9zzDwl5WwI730iCtPRynDRllxD8kmV7i+rAe5NUOa1RSNAmlzgLAZ4rqv9F14Zt0dN2Luv64x5CO5LEr5wu9YmX3OKeHU+NR2gvL/a3qKS5iQWBrjWMdJDjQ7VR/3gkoWTlj99cC5P4VjROHpXUl6MyvaSiJeRwH6/gOjmg/khMyUK0hHdoxh1EvKY5y9hmSUC211l/c5V7MXClPNRHZGbh2o0HJNYq6YxEhuIEn4MJEDeniKR9uFLA0Rr19EvSycxjyaGlMHiPNIsdOw89sKwY67d9Vu16FUh7Xotq3A3xwSchtfibpTRbgV4WZfq2c1lJYYMDRTF1gPjyTOc6bhH82ekUUo20DNO5Pt9J4T5wqwJUMjy8S7eIMNvbXHvwK9JpE0hW+VQxjo8w2ui5EhRD7WATnmH/Hy6E8NHrTPTJxYbotafOhfDFFt09tBXkmyMh1mjG5rb5qKFoIWUxsWFh70=
+  on:
+    branch: master
+    tags: true
+    repo: deg-skeletor/skeletor-plugin-rollup
