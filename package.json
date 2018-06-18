@@ -26,5 +26,10 @@
     },
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "keywords": [
+        "skeletor",
+        "skeletor-plugin",
+        "rollup"
+    ]
 }
