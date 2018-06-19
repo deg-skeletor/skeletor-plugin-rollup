@@ -42,13 +42,13 @@ Example:
     rollupPlugins: [
         {
             module: require('rollup-plugin-babel'),
-            config: {
+            pluginConfig: {
                 exclude: 'node_modules/**'   
             }
         },
         {
             module: require('rollup-plugin-node-resolve'),
-            config: {
+            pluginConfig: {
                 browser: true
             }
         },
