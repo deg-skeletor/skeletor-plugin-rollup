@@ -12,20 +12,21 @@ function formatPlugins(listOfPlugins) {
 }
 
 async function buildBundle(bundleConfig, pluginsFromConfig = []) {
-    // only transpile not in development?
     const inputOpts = {
         input: path.resolve(bundleConfig.entry),
         plugins: formatPlugins(pluginsFromConfig)
     };
 
-    const outputOpts = {
-        file: path.resolve(bundleConfig.dest),
-        format: bundleConfig.format || 'es'
-    };
-
     try {
         const bundle = await rollup.rollup(inputOpts);
-        return bundle.write(outputOpts);
+        const outputConfigs = Array.isArray(bundleConfig.output) ? bundleConfig.output : [bundleConfig.output];
+        return Promise.all(outputConfigs.map(oConfig => {
+            const outputOpts = {
+                file: path.resolve(oConfig.dest),
+                format: oConfig.format || 'es'
+            };
+            return bundle.write(outputOpts);
+        }));
     } catch (e) {
         return Promise.reject(e);
     }
@@ -36,7 +37,10 @@ function run(config, {logger}) {
     if (config.bundles) {
         return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig, config.rollupPlugins)))
             .then(responses => {
-                logger.info(`${responses.length} bundle${responses.length === 1 ? '' : 's'} complete.`);
+                const bundleCount = responses.reduce((accum, item) => {
+                    return accum + item.length;
+                }, 0);
+                logger.info(`${bundleCount} bundle${bundleCount === 1 ? '' : 's'} complete.`);
                 return {
                     status: 'complete'
                 };

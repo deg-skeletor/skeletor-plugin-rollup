@@ -36,8 +36,10 @@ Example:
 {
     bundles: [{
         entry: "source/js/main.js",
-        dest: "dist/js/main-bundle.js",
-        format: "es"
+        output: [{
+            dest: "dist/js/main-bundle.js",
+            format: "es"
+        }]
     }],
     rollupPlugins: [
         {
@@ -80,13 +82,23 @@ Example:
     bundles: [
         {
             entry: "source/js/main.js",
-            dest: "dist/js/main-bundle.js",
-            format: "es"
+            output: [{
+                dest: "dist/js/main-bundle.js",
+                format: "es"
+            }]
         },
         {
             entry: "source/js/formHandler.js",
-            dest: "dist/js/formHandler-bundle.js",
-            format: "es"
+            output: [
+                {
+                    dest: "dist/js/formHandler-bundle.js",
+                    format: "es"
+                },
+                {
+                    dest: "dist/js/formHandler-bundle-legacy.js",
+                    format: "iife"
+                }
+            ]
         }
     ]
 }
@@ -98,16 +110,15 @@ Type: `String`
 
 Path to entry point for bundle. This path is from the root of the project.
 
-**dest**
+**output**
 
-Type: `String`
+Type: `Object[]`
 
-Path to destination for bundle. This path is from the root of the project.
+Describes the output files from rollup.
 
-**format (optional)**
+It includes a `dest` property that is a string path (from root) to where the bundle will be placed.
 
-Type: `String`
-Default: `es`
+It includes an optional `format` property. This is a strinig and will default to `es`.
 
 The format that the bundle should be in. Other options include
 ```

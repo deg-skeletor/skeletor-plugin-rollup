@@ -9,6 +9,7 @@ const logger = {
     error: () => {}
 };
 const options = {logger};
+const logSpy = jest.spyOn(logger, 'info');
 
 describe('rollup plugin', () => {
 
@@ -18,6 +19,7 @@ describe('rollup plugin', () => {
 
     afterEach(() => {
         rollup.__clearFakeBundle();
+        logSpy.mockReset();
     });
 
     it('should error if no bundles defined', () => {
@@ -32,7 +34,9 @@ describe('rollup plugin', () => {
         const config = {
             bundles: [{
                 entry: 'source/test.txt',
-                dest: 'public/test.txt'
+                output: [{
+                    dest: 'public/test.txt'
+                }]
             }]
         };
         const expectedResponse = {
@@ -50,7 +54,9 @@ describe('rollup plugin', () => {
             const config = {
                 bundles: [{
                     entry: 'source/test.txt',
-                    dest: 'public/test.txt'
+                    output: [{
+                        dest: 'public/test.txt'
+                    }]
                 }],
                 rollupPlugins: [
                     {
@@ -75,7 +81,9 @@ describe('rollup plugin', () => {
             const config = {
                 bundles: [{
                     entry: 'source/test.txt',
-                    dest: 'public/test.txt'
+                    output: [{
+                        dest: 'public/test.txt'
+                    }]
                 }],
                 rollupPlugins: [
                     {
@@ -97,7 +105,9 @@ describe('rollup plugin', () => {
             const config = {
                 bundles: [{
                     entry: 'source/test.txt',
-                    dest: 'public/test.txt'
+                    output: [{
+                        dest: 'public/test.txt'
+                    }]
                 }],
                 rollupPlugins: [
                     {
@@ -119,17 +129,19 @@ describe('rollup plugin', () => {
         const config = {
             bundles: [{
                 entry: 'source/test.txt',
-                dest: 'public/test.txt',
-                format: 'iffe'
+                output: [{
+                    dest: 'public/test.txt',
+                    format: 'iffe'
+                }]
             }]
         };
-        const expectedResponse = {
+        const expectedResponse = [{
             file: 'public/test.txt',
             format: 'iffe'
-        };
+        }];
         return skeletorRollup().run(config, options).then(() => {
-            const inputOpts = rollup.__getFakeBundle().output;
-            expect(inputOpts).toEqual(expectedResponse);
+            const outputOpts = rollup.__getFakeBundle().output;
+            expect(outputOpts).toEqual(expectedResponse);
         });
     });
 
@@ -137,16 +149,18 @@ describe('rollup plugin', () => {
         const config = {
             bundles: [{
                 entry: 'source/test.txt',
-                dest: 'public/test.txt'
+                output: [{
+                    dest: 'public/test.txt'
+                }]
             }]
         };
-        const expectedResponse = {
+        const expectedResponse = [{
             file: 'public/test.txt',
             format: 'es'
-        };
+        }];
         return skeletorRollup().run(config, options).then(() => {
-            const inputOpts = rollup.__getFakeBundle().output;
-            expect(inputOpts).toEqual(expectedResponse);
+            const outputOpts = rollup.__getFakeBundle().output;
+            expect(outputOpts).toEqual(expectedResponse);
         });
     });
 
@@ -154,10 +168,11 @@ describe('rollup plugin', () => {
         const config = {
             bundles: [{
                 entry: 'source/test.txt',
-                dest: 'public/test.txt'
+                output: [{
+                    dest: 'public/test.txt'
+                }]
             }]
         };
-        const logSpy = jest.spyOn(logger, 'info');
         const expectedResponse = {
             status: 'complete'
         };
@@ -172,12 +187,117 @@ describe('rollup plugin', () => {
         const config = {
             bundles: [{
                 entry: 'source/test.txt',
-                dest: 'error'
+                output: [{
+                    dest: 'error'
+                }]
             }]
         };
         const errMessage = 'Error: Could not resolve entry (error)';
         return skeletorRollup().run(config, options).catch(err => {
             expect(err).toEqual(errMessage);
+        });
+    });
+
+    describe('output', () => {
+        it('should handle one output configuration', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/entry.js',
+                    output: [{
+                        dest: 'dist/main-bundle2.js',
+                        format: 'iife'
+                    }]
+                }]
+            };
+
+            const expectedResponse = [
+                {
+                    file: 'dist/main-bundle2.js',
+                    format: 'iife'
+                }
+            ];
+            return skeletorRollup().run(config, options).then(() => {
+                const inputOpts = rollup.__getFakeBundle().output;
+                expect(inputOpts).toEqual(expectedResponse);
+            });
+
+        });
+
+        it('should handle output as object', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/entry.js',
+                    output: {
+                        dest: 'dist/main-bundle2.js',
+                        format: 'iife'
+                    }
+                }]
+            };
+
+            const expectedResponse = [
+                {
+                    file: 'dist/main-bundle2.js',
+                    format: 'iife'
+                }
+            ];
+            return skeletorRollup().run(config, options).then(() => {
+                const inputOpts = rollup.__getFakeBundle().output;
+                expect(inputOpts).toEqual(expectedResponse);
+            });
+        });
+
+        it('should handle multiple output configurations', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/entry.js',
+                    output: [
+                        {
+                            dest: 'dist/main-bundle.js'
+                        },
+                        {
+                            dest: 'dist/main-bundle2.js',
+                            format: 'iife'
+                        }
+                    ]
+                }]
+            };
+
+            const expectedResponse = [
+                {
+                    file: 'dist/main-bundle.js',
+                    format: 'es'
+                },
+                {
+                    file: 'dist/main-bundle2.js',
+                    format: 'iife'
+                }
+            ];
+            return skeletorRollup().run(config, options).then(() => {
+                const inputOpts = rollup.__getFakeBundle().output;
+                expect(inputOpts).toEqual(expectedResponse);
+            });
+        });
+
+        it('should log correct number of bundles', () => {
+            const config = {
+                bundles: [{
+                    entry: 'source/entry.js',
+                    output: [
+                        {
+                            dest: 'dist/main-bundle.js'
+                        },
+                        {
+                            dest: 'dist/main-bundle2.js',
+                            format: 'iife'
+                        }
+                    ]
+                }]
+            };
+
+            return skeletorRollup().run(config, options).then(() => {
+                expect(logSpy).toHaveBeenCalledTimes(1);
+                expect(logSpy).toHaveBeenCalledWith('2 bundles complete.');
+            });
         });
     });
 
