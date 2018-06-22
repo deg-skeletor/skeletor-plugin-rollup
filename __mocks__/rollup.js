@@ -16,11 +16,11 @@ function rollupFn(inputOpts) {
 }
 
 function write(outputOpts) {
-    __fakeBundle = {
-        ...__fakeBundle,
-        output: outputOpts
-    };
-
+    if (__fakeBundle.output) {
+        __fakeBundle.output.push(outputOpts);
+    } else {
+        __fakeBundle.output = [outputOpts];
+    }
     if (outputOpts.file === 'error') {
         Promise.reject('Error: Could not resolve entry (error)');
     }

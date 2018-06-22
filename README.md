@@ -36,8 +36,10 @@ Example:
 {
     bundles: [{
         entry: "source/js/main.js",
-        dest: "dist/js/main-bundle.js",
-        format: "es"
+        output: [{
+            file: "dist/js/main-bundle.js",
+            format: "es"
+        }]
     }],
     rollupPlugins: [
         {
@@ -80,13 +82,23 @@ Example:
     bundles: [
         {
             entry: "source/js/main.js",
-            dest: "dist/js/main-bundle.js",
-            format: "es"
+            output: [{
+                fille: "dist/js/main-bundle.js",
+                format: "es"
+            }]
         },
         {
             entry: "source/js/formHandler.js",
-            dest: "dist/js/formHandler-bundle.js",
-            format: "es"
+            output: [
+                {
+                    file: "dist/js/formHandler-bundle.js",
+                    format: "es"
+                },
+                {
+                    file: "dist/js/formHandler-bundle-legacy.js",
+                    format: "iife"
+                }
+            ]
         }
     ]
 }
@@ -98,27 +110,13 @@ Type: `String`
 
 Path to entry point for bundle. This path is from the root of the project.
 
-**dest**
+**output**
 
-Type: `String`
+Type: `Object[]`
 
-Path to destination for bundle. This path is from the root of the project.
+Describes the output files from rollup. This object should include properties supported by [rollup outputs](https://rollupjs.org/guide/en#big-list-of-options)
 
-**format (optional)**
-
-Type: `String`
-Default: `es`
-
-The format that the bundle should be in. Other options include
-```
-amd – Asynchronous Module Definition, used with module loaders like RequireJS
-cjs – CommonJS, suitable for Node and Browserify/Webpack
-es – Keep the bundle as an ES module file
-iife – A self-executing function, suitable for inclusion as a <script> tag. (If you want to create a bundle for your application, you probably want to use this, because it leads to smaller file sizes.)
-umd – Universal Module Definition, works as amd, cjs and iife all in one
-system – Native format of the SystemJS loader
-```
-^^ From [rollup documentation](https://rollupjs.org/guide/en#big-list-of-options)
+If not specified, the `format` property will default to `es`.
 
 ### Rollup Plugin Config Object
 
