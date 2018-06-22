@@ -35,7 +35,7 @@ describe('rollup plugin', () => {
             bundles: [{
                 entry: 'source/test.txt',
                 output: [{
-                    dest: 'public/test.txt'
+                    file: 'public/test.txt'
                 }]
             }]
         };
@@ -55,7 +55,7 @@ describe('rollup plugin', () => {
                 bundles: [{
                     entry: 'source/test.txt',
                     output: [{
-                        dest: 'public/test.txt'
+                        file: 'public/test.txt'
                     }]
                 }],
                 rollupPlugins: [
@@ -82,7 +82,7 @@ describe('rollup plugin', () => {
                 bundles: [{
                     entry: 'source/test.txt',
                     output: [{
-                        dest: 'public/test.txt'
+                        file: 'public/test.txt'
                     }]
                 }],
                 rollupPlugins: [
@@ -106,7 +106,7 @@ describe('rollup plugin', () => {
                 bundles: [{
                     entry: 'source/test.txt',
                     output: [{
-                        dest: 'public/test.txt'
+                        file: 'public/test.txt'
                     }]
                 }],
                 rollupPlugins: [
@@ -130,7 +130,7 @@ describe('rollup plugin', () => {
             bundles: [{
                 entry: 'source/test.txt',
                 output: [{
-                    dest: 'public/test.txt',
+                    file: 'public/test.txt',
                     format: 'iffe'
                 }]
             }]
@@ -150,7 +150,7 @@ describe('rollup plugin', () => {
             bundles: [{
                 entry: 'source/test.txt',
                 output: [{
-                    dest: 'public/test.txt'
+                    file: 'public/test.txt'
                 }]
             }]
         };
@@ -169,7 +169,7 @@ describe('rollup plugin', () => {
             bundles: [{
                 entry: 'source/test.txt',
                 output: [{
-                    dest: 'public/test.txt'
+                    file: 'public/test.txt'
                 }]
             }]
         };
@@ -188,7 +188,7 @@ describe('rollup plugin', () => {
             bundles: [{
                 entry: 'source/test.txt',
                 output: [{
-                    dest: 'error'
+                    file: 'error'
                 }]
             }]
         };
@@ -204,7 +204,7 @@ describe('rollup plugin', () => {
                 bundles: [{
                     entry: 'source/entry.js',
                     output: [{
-                        dest: 'dist/main-bundle2.js',
+                        file: 'dist/main-bundle2.js',
                         format: 'iife'
                     }]
                 }]
@@ -228,7 +228,7 @@ describe('rollup plugin', () => {
                 bundles: [{
                     entry: 'source/entry.js',
                     output: {
-                        dest: 'dist/main-bundle2.js',
+                        file: 'dist/main-bundle2.js',
                         format: 'iife'
                     }
                 }]
@@ -252,10 +252,10 @@ describe('rollup plugin', () => {
                     entry: 'source/entry.js',
                     output: [
                         {
-                            dest: 'dist/main-bundle.js'
+                            file: 'dist/main-bundle.js'
                         },
                         {
-                            dest: 'dist/main-bundle2.js',
+                            file: 'dist/main-bundle2.js',
                             format: 'iife'
                         }
                     ]
@@ -284,10 +284,10 @@ describe('rollup plugin', () => {
                     entry: 'source/entry.js',
                     output: [
                         {
-                            dest: 'dist/main-bundle.js'
+                            file: 'dist/main-bundle.js'
                         },
                         {
-                            dest: 'dist/main-bundle2.js',
+                            file: 'dist/main-bundle2.js',
                             format: 'iife'
                         }
                     ]

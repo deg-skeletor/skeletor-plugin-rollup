@@ -16,15 +16,19 @@ async function buildBundle(bundleConfig, pluginsFromConfig = []) {
         input: path.resolve(bundleConfig.entry),
         plugins: formatPlugins(pluginsFromConfig)
     };
+    const outputDefaults = {
+        format: 'es'
+    };
 
     try {
         const bundle = await rollup.rollup(inputOpts);
         const outputConfigs = Array.isArray(bundleConfig.output) ? bundleConfig.output : [bundleConfig.output];
         return Promise.all(outputConfigs.map(oConfig => {
             const outputOpts = {
-                file: path.resolve(oConfig.dest),
-                format: oConfig.format || 'es'
+                ...outputDefaults,
+                ...oConfig
             };
+            outputOpts.file = path.resolve(outputOpts.file);
             return bundle.write(outputOpts);
         }));
     } catch (e) {
