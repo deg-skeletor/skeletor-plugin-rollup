@@ -35,7 +35,9 @@ Example:
 ```
 {
     bundles: [{
-        entry: "source/js/main.js",
+        input: {
+            entry: "source/js/main.js"
+        },        
         output: [{
             file: "dist/js/main-bundle.js",
             format: "es"
@@ -81,14 +83,18 @@ Example:
 {
     bundles: [
         {
-            entry: "source/js/main.js",
+            input: {
+                entry: "source/js/main.js"
+            },
             output: [{
                 fille: "dist/js/main-bundle.js",
                 format: "es"
             }]
         },
         {
-            entry: "source/js/formHandler.js",
+            input: {
+                entry: "source/js/formHandler.js"
+            },
             output: [
                 {
                     file: "dist/js/formHandler-bundle.js",
@@ -104,7 +110,13 @@ Example:
 }
 ```
 
-**entry**
+**input**
+
+Type: `Object`
+
+must have an `entry` property. Also holds any other input configurations supported by [rollup](https://rollupjs.org/guide/en#command-line-reference).
+
+**input.entry**
 
 Type: `String`
 

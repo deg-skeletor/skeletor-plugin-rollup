@@ -33,6 +33,29 @@ describe('rollup plugin', () => {
     it('should create input options', () => {
         const config = {
             bundles: [{
+                input: {
+                    entry: 'source/test.txt',
+                    experimentalCodeSplitting: true
+                },
+                output: [{
+                    file: 'public/test.txt'
+                }]
+            }]
+        };
+        const expectedResponse = {
+            input: 'source/test.txt',
+            experimentalCodeSplitting: true,
+            plugins: []
+        };
+        return skeletorRollup().run(config, options).then(() => {
+            const inputOpts = rollup.__getFakeBundle().input;
+            expect(inputOpts).toEqual(expectedResponse);
+        });
+    });
+
+    it('should handle original config for entry', () => {
+        const config = {
+            bundles: [{
                 entry: 'source/test.txt',
                 output: [{
                     file: 'public/test.txt'
@@ -53,7 +76,9 @@ describe('rollup plugin', () => {
         it('should create array of plugins', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/test.txt',
+                    input: {
+                        entry: 'source/test.txt'
+                    },
                     output: [{
                         file: 'public/test.txt'
                     }]
@@ -80,7 +105,9 @@ describe('rollup plugin', () => {
         it('should default plugin config to empty object', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/test.txt',
+                    input: {
+                        entry: 'source/test.txt'
+                    },
                     output: [{
                         file: 'public/test.txt'
                     }]
@@ -104,7 +131,9 @@ describe('rollup plugin', () => {
             };
             const config = {
                 bundles: [{
-                    entry: 'source/test.txt',
+                    input: {
+                        entry: 'source/test.txt'
+                    },
                     output: [{
                         file: 'public/test.txt'
                     }]
@@ -128,7 +157,9 @@ describe('rollup plugin', () => {
     it('should create output options', () => {
         const config = {
             bundles: [{
-                entry: 'source/test.txt',
+                input: {
+                    entry: 'source/test.txt'
+                },
                 output: [{
                     file: 'public/test.txt',
                     format: 'iffe'
@@ -148,7 +179,9 @@ describe('rollup plugin', () => {
     it('should default format to "es"', () => {
         const config = {
             bundles: [{
-                entry: 'source/test.txt',
+                input: {
+                    entry: 'source/test.txt'
+                },
                 output: [{
                     file: 'public/test.txt'
                 }]
@@ -167,7 +200,9 @@ describe('rollup plugin', () => {
     it('should log when bundles are complete', () => {
         const config = {
             bundles: [{
-                entry: 'source/test.txt',
+                input: {
+                    entry: 'source/test.txt'
+                },
                 output: [{
                     file: 'public/test.txt'
                 }]
@@ -186,7 +221,9 @@ describe('rollup plugin', () => {
     it('should handle buildBundle error gracefully', () => {
         const config = {
             bundles: [{
-                entry: 'source/test.txt',
+                input: {
+                    entry: 'source/test.txt'
+                },
                 output: [{
                     file: 'error'
                 }]
@@ -202,7 +239,9 @@ describe('rollup plugin', () => {
         it('should handle one output configuration', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/entry.js',
+                    input: {
+                        entry: 'source/entry.js'
+                    },
                     output: [{
                         file: 'dist/main-bundle2.js',
                         format: 'iife'
@@ -226,7 +265,9 @@ describe('rollup plugin', () => {
         it('should handle output as object', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/entry.js',
+                    input: {
+                        entry: 'source/entry.js'
+                    },
                     output: {
                         file: 'dist/main-bundle2.js',
                         format: 'iife'
@@ -249,7 +290,9 @@ describe('rollup plugin', () => {
         it('should handle multiple output configurations', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/entry.js',
+                    input: {
+                        entry: 'source/entry.js'
+                    },
                     output: [
                         {
                             file: 'dist/main-bundle.js'
@@ -281,7 +324,9 @@ describe('rollup plugin', () => {
         it('should log correct number of bundles', () => {
             const config = {
                 bundles: [{
-                    entry: 'source/entry.js',
+                    input: {
+                        entry: 'source/entry.js'
+                    },
                     output: [
                         {
                             file: 'dist/main-bundle.js'

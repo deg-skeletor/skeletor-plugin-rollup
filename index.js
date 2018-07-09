@@ -11,10 +11,26 @@ function formatPlugins(listOfPlugins) {
     });
 }
 
+function getEntryPath(bundleConfig) {
+    return bundleConfig.entry || bundleConfig.input.entry;
+}
+
+function formatInputOpts(bundleConfig) {
+    const inputConfigCpy = {...bundleConfig.input};
+
+    if (bundleConfig.input && bundleConfig.input.entry) {
+        delete inputConfigCpy.entry;
+    }
+    
+    return inputConfigCpy;
+}
+
 async function buildBundle(bundleConfig, pluginsFromConfig = []) {
+
     const inputOpts = {
-        input: path.resolve(bundleConfig.entry),
-        plugins: formatPlugins(pluginsFromConfig)
+        input: path.resolve(getEntryPath(bundleConfig)),
+        plugins: formatPlugins(pluginsFromConfig),
+        ...formatInputOpts(bundleConfig)
     };
     const outputDefaults = {
         format: 'es'
