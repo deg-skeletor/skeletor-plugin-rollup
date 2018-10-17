@@ -33,6 +33,28 @@ describe('An error should be thrown', () => {
         }
     });
 
+    it('if no input is defined', async () => {
+        const config = { output: { file: 'dist/test.txt'} };
+        const expectedErrorMessage = 'Error: Configuration does not have input and output properties.';
+        
+        try {
+            await skeletorRollup().run(config, options);
+        } catch(e) {
+            expect(e).toEqual(expectedErrorMessage);
+        }
+    });
+
+    it('if no output is defined', async () => {
+        const config = { input: 'source/test.txt' };
+        const expectedErrorMessage = 'Error: Configuration does not have input and output properties.';
+        
+        try {
+            await skeletorRollup().run(config, options);
+        } catch(e) {
+            expect(e).toEqual(expectedErrorMessage);
+        }
+    });
+
     it('if a bundle fails to write', async () => {
         const config = {
             input: 'source/test.txt',
