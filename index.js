@@ -1,74 +1,74 @@
 const rollup = require('rollup');
 const path = require('path');
 
+const outputDefaults = {
+    format: 'es'
+};
+
+function handleSuccess(responses, logger) {
+    const bundleCount = responses.reduce((accum, outputs) => {
+        return accum + outputs.reduce((accum, output) => {
+            return accum + Object.keys(output.output).length;
+        }, 0);
+    }, 0);
+
+    logger.info(`${bundleCount} bundle${bundleCount === 1 ? '' : 's'} built.`);
+    
+    return {
+        status: 'complete'
+    };
+}
+
 function handleError(message) {
     return Promise.reject(message);
 }
 
-function formatPlugins(listOfPlugins) {
-    return listOfPlugins.map(plugin => {
-        return plugin.module(plugin.pluginConfig || {});
+function logBuiltBundles(response, outputOptions, logger) {
+    Object.keys(response.output).forEach(key => {
+        const bundleFilepath = outputOptions.file ? 
+            outputOptions.file : 
+            path.join(outputOptions.dir, response.output[key].fileName);
+        logger.info(`Built bundle "${bundleFilepath}".`);
     });
 }
 
-function getEntryPath(bundleConfig) {
-    return bundleConfig.entry || bundleConfig.input.entry;
+function outputBundleFiles(bundle, output, logger) {
+    const outputs = Array.isArray(output) ? output : [output];
+    return Promise.all(outputs.map(outputItem => {
+        const outputOptions = {
+            ...outputDefaults,
+            ...outputItem
+        };
+        
+        return bundle.write(outputOptions)
+            .then(response => {
+                logBuiltBundles(response, outputOptions, logger);
+                return response;
+            });
+    }));
 }
 
-function formatInputOpts(bundleConfig) {
-    const inputConfigCpy = {...bundleConfig.input};
-
-    if (bundleConfig.input && bundleConfig.input.entry) {
-        delete inputConfigCpy.entry;
-    }
-    
-    return inputConfigCpy;
-}
-
-async function buildBundle(bundleConfig, pluginsFromConfig = []) {
-
-    const inputOpts = {
-        input: path.resolve(getEntryPath(bundleConfig)),
-        plugins: formatPlugins(pluginsFromConfig),
-        ...formatInputOpts(bundleConfig)
-    };
-    const outputDefaults = {
-        format: 'es'
-    };
-
-    try {
-        const bundle = await rollup.rollup(inputOpts);
-        const outputConfigs = Array.isArray(bundleConfig.output) ? bundleConfig.output : [bundleConfig.output];
-        return Promise.all(outputConfigs.map(oConfig => {
-            const outputOpts = {
-                ...outputDefaults,
-                ...oConfig
-            };
-            outputOpts.file = path.resolve(outputOpts.file);
-            return bundle.write(outputOpts);
-        }));
-    } catch (e) {
-        return Promise.reject(e);
+async function buildBundles({input, output, plugins = [], ...options}, logger) {
+    if(!input || !output) {
+        return handleError('Error: Configuration does not have input and output properties.');
     }
 
+    const inputOptions = {
+        input,
+        plugins,
+        ...options
+    };
+
+    const bundle = await rollup.rollup(inputOptions);
+    return outputBundleFiles(bundle, output, logger);
 }
 
 function run(config, {logger}) {
-    if (config.bundles) {
-        return Promise.all(config.bundles.map(bundleConfig => buildBundle(bundleConfig, config.rollupPlugins)))
-            .then(responses => {
-                const bundleCount = responses.reduce((accum, item) => {
-                    return accum + item.length;
-                }, 0);
-                logger.info(`${bundleCount} bundle${bundleCount === 1 ? '' : 's'} complete.`);
-                return {
-                    status: 'complete'
-                };
-            })
-            .catch(handleError);
-    }
+    const rollupConfigs = Array.isArray(config) ? config : [config];
 
-    return handleError('Error: No bundle configurations found.');
+    return Promise.all(rollupConfigs.map(rollupConfig => buildBundles(rollupConfig, logger)))
+        .then(responses => handleSuccess(responses, logger))
+        .catch(handleError)
 }
 
 module.exports = skeletorLocalServer = () => (

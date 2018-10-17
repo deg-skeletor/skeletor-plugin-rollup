@@ -1,31 +1,23 @@
-let __fakeBundle = {};
-
-const rollup = {
-    rollup: rollupFn
+let __fakeBundle = {
+    write: jest.fn(write)
 };
 
-function rollupFn(inputOpts) {
-    __fakeBundle = {
-        ...__fakeBundle,
-        input: inputOpts
-    };
-
-    return Promise.resolve({
-        write
-    });
-}
+const rollup = {
+    rollup: jest.fn(() => Promise.resolve(__fakeBundle))
+};
 
 function write(outputOpts) {
-    if (__fakeBundle.output) {
-        __fakeBundle.output.push(outputOpts);
-    } else {
-        __fakeBundle.output = [outputOpts];
-    }
     if (outputOpts.file === 'error') {
-        Promise.reject('Error: Could not resolve entry (error)');
+        return Promise.reject('Error: Could not resolve entry (error)');
     }
 
-    return Promise.resolve();
+    return Promise.resolve({
+        output: {
+            bundle: {
+                fileName: 'bundle.js'
+            }
+        }
+    });
 }
 
 function __getFakeBundle() {
@@ -33,7 +25,7 @@ function __getFakeBundle() {
 }
 
 function __clearFakeBundle() {
-    __fakeBundle = {};
+    __fakeBundle.write.mockClear();
 }
 
 rollup.__clearFakeBundle = __clearFakeBundle;
