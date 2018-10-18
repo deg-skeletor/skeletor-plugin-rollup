@@ -1,15 +1,17 @@
 const rollup = require('rollup');
 const path = require('path');
+const flattenArray = require('./lib/utils').flattenArray;
 
 const outputDefaults = {
     format: 'es'
 };
 
 function handleSuccess(responses, logger) {
-    const bundleCount = responses.reduce((accum, outputs) => {
-        return accum + outputs.reduce((accum, output) => {
-            return accum + Object.keys(output.output).length;
-        }, 0);
+    const flattenedResponses = flattenArray(responses);
+
+    const bundleCount = flattenedResponses.reduce((acc, response) => {
+        const count = response.output ? Object.keys(response.output).length : 1;
+        return acc + count;
     }, 0);
 
     logger.info(`${bundleCount} bundle${bundleCount === 1 ? '' : 's'} built.`);
@@ -23,29 +25,42 @@ function handleError(message) {
     return Promise.reject(message);
 }
 
-function logBuiltBundles(response, outputOptions, logger) {
-    Object.keys(response.output).forEach(key => {
-        const bundleFilepath = outputOptions.file ? 
+function logBuiltBundle(filename, outputOptions, logger) {
+    const bundleFilepath = outputOptions.file ? 
             outputOptions.file : 
-            path.join(outputOptions.dir, response.output[key].fileName);
-        logger.info(`Built bundle "${bundleFilepath}".`);
-    });
+            path.join(outputOptions.dir, filename);
+    logger.info(`Built bundle "${bundleFilepath}".`);
 }
 
-function outputBundleFiles(bundle, output, logger) {
+function logBuiltBundles(response, outputOptions, logger) {
+    if(response.output) {
+        Object.keys(response.output).forEach(key => {
+            logBuiltBundle(response.output[key].fileName, outputOptions, logger);
+        });
+    } else {
+        logBuiltBundle(response.fileName, outputOptions, logger);
+    }
+}
+
+async function outputBundleFiles(bundle, output, logger) {
     const outputs = Array.isArray(output) ? output : [output];
-    return Promise.all(outputs.map(outputItem => {
+
+    const responses = [];
+
+    //Use for...of so async bundle.write() calls run in sequence, not parallel
+    for(const outputItem of outputs) {
         const outputOptions = {
             ...outputDefaults,
             ...outputItem
         };
-        
-        return bundle.write(outputOptions)
-            .then(response => {
-                logBuiltBundles(response, outputOptions, logger);
-                return response;
-            });
-    }));
+
+        const response = await bundle.write(outputOptions)
+        logBuiltBundles(response, outputOptions, logger);   
+
+        responses.push(response);
+    }
+
+    return responses;
 }
 
 async function buildBundles({input, output, plugins = [], ...options}, logger) {

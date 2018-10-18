@@ -11,12 +11,19 @@ function write(outputOpts) {
         return Promise.reject('Error: Could not resolve entry (error)');
     }
 
-    return Promise.resolve({
-        output: {
-            bundle: {
-                fileName: 'bundle.js'
+    //Writing a bundle with code splitting produces a different response structure
+    if(outputOpts.dir) {
+        return Promise.resolve({
+            output: {
+                bundle: {
+                    fileName: 'bundle.js'
+                }
             }
-        }
+        });
+    }
+
+    return Promise.resolve({
+        fileName: 'bundle.js'
     });
 }
 
