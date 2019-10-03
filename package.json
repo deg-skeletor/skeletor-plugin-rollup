@@ -1,6 +1,6 @@
 {
     "name": "@deg-skeletor/plugin-rollup",
-    "version": "2.0.3",
+    "version": "3.0.0",
     "description": "A Skeletor plugin to bundle Javascript modules.",
     "main": "index.js",
     "scripts": {
@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "path": "^0.12.7",
-        "rollup": "^0.66.6"
+        "rollup": "^1.22.0"
     },
     "publishConfig": {
         "access": "public"
