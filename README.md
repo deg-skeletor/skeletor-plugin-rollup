@@ -73,8 +73,7 @@ The configuration for this plugin mimics the standard configuration patterns for
             dir: "dist/js/nomodule",
             format: "system"
         }
-    }],
-    experimentalCodeSplitting: true
+    }]
 }
 ```
 
