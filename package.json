@@ -1,6 +1,6 @@
 {
     "name": "@deg-skeletor/plugin-rollup",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "A Skeletor plugin to bundle Javascript modules.",
     "main": "index.js",
     "scripts": {
@@ -13,12 +13,16 @@
         "type": "git",
         "url": "git+https://github.com/deg-skeletor/skeletor-plugin-rollup.git"
     },
+    "files": [
+        "index.js",
+        "lib"
+    ],
     "peerDependencies": {
         "@deg-skeletor/core": "^1.1.1"
     },
     "devDependencies": {
-        "eslint": "^7.3.1",
-        "jest": "^26.1.0"
+        "eslint": "7.18.0",
+        "jest": "26.6.3"
     },
     "dependencies": {
         "rollup": "^2.18.1"

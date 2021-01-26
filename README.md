@@ -1,5 +1,5 @@
 # Skeletor Rollup Plugin
-[![Build Status](https://travis-ci.org/deg-skeletor/skeletor-plugin-rollup.svg?branch=master)](https://travis-ci.org/deg-skeletor/skeletor-plugin-rollup)
+![Run Tests](https://github.com/deg-skeletor/skeletor-plugin-rollup/workflows/Run%20Tests/badge.svg)
 
 The purpose of this plugin is to bundle modules together using [Rollup](https://rollupjs.org). This plugin is part of the Skeletor ecosystem. To learn more about Skeletor, [go here](https://github.com/deg-skeletor/skeletor-core).
 
